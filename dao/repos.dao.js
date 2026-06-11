@@ -19,7 +19,7 @@ async function createRepo(connection, overviewId, repo) {
         `,
         [
             overviewId,
-            repo.repoName,
+            repo.reponame,
             repo.description,
             repo.starCount,
             repo.forkCount,

@@ -1,7 +1,7 @@
-import { fetchGitData } from "../services/githubAnalyze.service.js";
+import { analyzeUser } from "../services/githubAnalyze.service.js";
 export default async function analyze(req,res){
     try{
-        const data = await fetchGitData(req.query.gitId);
+        const data = await analyzeUser(req.query.gitId);
         res.send(data);
     }catch(error){
         if(error.name == "AbortError")
