@@ -61,40 +61,17 @@ Create a MySQL database.
 
 ```sql
 CREATE DATABASE github_analyzer;
-
-USE github_analyzer;
-
-CREATE TABLE overview (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) NOT NULL UNIQUE,
-    public_repo_count INT NOT NULL,
-    follower_count INT NOT NULL,
-    create_date DATETIME NOT NULL,
-    last_active DATETIME NOT NULL,
-    popularity VARCHAR(16)
-);
-
-CREATE TABLE repos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    overview_id INT NOT NULL,
-    repo_name VARCHAR(255) NOT NULL,
-    description TEXT,
-    star_count INT NOT NULL DEFAULT 0,
-    fork_count INT NOT NULL DEFAULT 0,
-    major_language VARCHAR(30),
-    all_languages JSON,
-    repo_created DATETIME NOT NULL,
-    repo_updated DATETIME NOT NULL,
-    size INT NOT NULL DEFAULT 0,
-
-    CONSTRAINT fk_repos_overview
-        FOREIGN KEY (overview_id)
-        REFERENCES overview(id)
-        ON DELETE CASCADE
-);
 ```
 
-Run the provided table creation scripts.
+Update your `.env` file with the database credentials.
+
+Initialize the database tables:
+
+```bash
+npm run init-db
+```
+
+This command automatically creates all required tables.
 
 ### Start Development Server
 
@@ -108,33 +85,48 @@ npm run dev
 
 ### Analyze GitHub User
 
-Fetches data from GitHub, stores it in MySQL, and returns analysis results.
+Analyzes a GitHub user, stores the data in MySQL, updates existing records if the user has already been analyzed, and returns the latest analysis.
+
+**Endpoint**
 
 ```http
-GET /api/analyze?username=yourUsername 
+GET /api/analyze?username={github_username}
 ```
 
-Example:
+**Example**
 
 ```http
 GET /api/analyze?username=rpDashCodes
 ```
 
+**Notes**
+
+* `username` query parameter is required.
+* If the user already exists in the database, their data is refreshed from GitHub.
+* If the user does not exist, a new record is created.
+
 ---
 
-### Get Stored Analysis
+### Get Analysis Data
 
 Retrieves previously analyzed data from the database.
 
-```http
-GET /api/analysis?gitId=username
-```
-
-Example:
+**Endpoint**
 
 ```http
-GET /api/analysis?gitId=rpDashCodes
+GET /api/analysis?username={github_username}
 ```
+
+**Example**
+
+```http
+GET /api/analysis?username=rpDashCodes
+```
+
+**Notes**
+
+* If `username` is provided, analysis data for that specific user is returned.
+* If `username` is omitted, all analyzed GitHub users are returned.
 
 ---
 
@@ -152,6 +144,8 @@ GET /api/analysis?gitId=rpDashCodes
   },
   "repositories": []
 }
+```
+
 ```
 
 ---
