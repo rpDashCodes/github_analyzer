@@ -28,7 +28,22 @@ app.use("/api/analyze",analyzeRoutes)
 app.use("/api/analysis",analysisRoutes)
 
 app.get("/",(req,res)=>{
-    res.send("hello");
+    res.json({
+        name: "GitHub Analyzer API",
+        version: "1.0.0",
+        endpoints: {
+            analyzeUser:
+                "/api/analyze?username=rpDashCodes",
+
+            getUserAnalysis:
+                "/api/analysis?username=rpDashCodes",
+
+            getAllAnalyses:
+                "/api/analysis"
+        },
+        author: "Rudra Prasad Dash",
+        email:"rudraprasaddash337@gmail.com"
+    });
 })
 app.listen(port, ()=>{
     console.log(`app is listening at port ${port}`)
