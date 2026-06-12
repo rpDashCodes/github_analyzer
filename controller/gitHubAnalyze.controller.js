@@ -1,7 +1,7 @@
 import { analyzeUser } from "../services/githubAnalyze.service.js";
 export default async function analyze(req,res){
     try{
-        const data = await analyzeUser(req.query.gitId);
+        const data = await analyzeUser(req.query.username);
         res.send(data);
     }catch(error){
         if(error.name == "AbortError")

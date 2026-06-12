@@ -1,3 +1,4 @@
+import pool from "../config/db.js";
 async function deleteReposByOverviewId(connection,overviewId) {
     await connection.execute(`DELETE FROM repos WHERE overview_id = ?`,[overviewId]);
 }
@@ -11,11 +12,12 @@ async function createRepo(connection, overviewId, repo) {
             star_count,
             fork_count,
             major_language,
+            size,
             all_languages,
             repo_created,
             repo_updated
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
             overviewId,
@@ -24,10 +26,25 @@ async function createRepo(connection, overviewId, repo) {
             repo.starCount,
             repo.forkCount,
             repo.majorLanguage,
+            repo.size,
             JSON.stringify(repo.allLanguages),
             repo.repoCreated,
             repo.repoUpdated
         ]
     );
 }
-export {createRepo, deleteReposByOverviewId};
+
+async function findReposByOverviewId(overviewId) {
+    const [rows] = await pool.execute(
+        `
+        SELECT *
+        FROM repos
+        WHERE overview_id = ?
+        `,
+        [overviewId]
+    );
+
+    return rows;
+}
+
+export {createRepo, deleteReposByOverviewId, findReposByOverviewId};

@@ -1,3 +1,7 @@
 import { Router } from "express";
+import { queryAnalysis } from "../controller/getanalysis.controller.js";
 const router = Router();
-router.get("/")
+
+router.get("/", queryAnalysis);
+
+export default router;

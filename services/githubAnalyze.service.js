@@ -2,6 +2,7 @@ import pool from "../config/db.js";
 
 import {createRepo, deleteReposByOverviewId} from "../dao/repos.dao.js"
 import {findOverviewByUsername, createOverview, updateOverview} from "../dao/overview.dao.js"
+import {buildAnalysisSummary} from "./analysis.service.js";
 
 function anlyzePopularity(followerCount){
     if(followerCount <100){
@@ -87,7 +88,6 @@ async function analyzeUser(id){
             "lastActive":new Date(userData.updated_at),
             "popularity":anlyzePopularity(userData.followers)
         }
-        console.log(analyzedUser);
         const reposRespons = await fetchRepos(userData.repos_url);
         const analyzedRepos = await Promise.all(
             reposRespons.map(async (repo)=>{
@@ -98,12 +98,12 @@ async function analyzeUser(id){
                 "starCount":repo.stargazers_count,
                 "forkCount":repo.forks_count,
                 "majorLanguage":repo.language,
+                "size":repo.size,
                 "allLanguages":languages,
                 "repoCreated":new Date(repo.created_at),
                 "repoUpdated":new Date(repo.updated_at)
             }
         }));
-        console.log(analyzedRepos);
         connection = await pool.getConnection();
         const existingUser = await findOverviewByUsername(analyzedUser.username);
         await connection.beginTransaction();
@@ -125,8 +125,9 @@ async function analyzeUser(id){
             );
         }
         await connection.commit();
-        
-        return{"useroverview":analyzedUser, "repos":analyzedRepos}
+        const data = buildAnalysisSummary(analyzedUser, analyzedRepos);
+
+        return data;
 
     }catch(error){
         if(connection){
