@@ -30,7 +30,7 @@ app.use("/api/analysis",analysisRoutes)
 app.get("/",(req,res)=>{
     res.json({
         name: "GitHub Analyzer API",
-        version: "1.0.0",
+        version: "2.0.0",
         endpoints: {
             analyzeUser:
                 "/api/analyze?username=rpDashCodes",
