@@ -4,6 +4,23 @@ import express from "express";
 import analyzeRoutes from "./routes/analyze.route.js"
 import analysisRoutes from "./routes/analysis.route.js"
 
+const requiredEnvVars = [
+    "GITHUB_TOKEN",
+    "DB_HOST",
+    "DB_USER",
+    "DB_PASSWORD",
+    "DB_NAME"
+];
+
+for(const envVar of requiredEnvVars){
+
+    if(!process.env[envVar]){
+
+        throw new Error(
+            `Missing environment variable: ${envVar}`
+        );
+    }
+}
 const port = process.env.SRV_PORT || 3000;
 const app = express();
 app.use(express.json())

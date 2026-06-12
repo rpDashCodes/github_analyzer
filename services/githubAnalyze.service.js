@@ -4,6 +4,11 @@ import {createRepo, deleteReposByOverviewId} from "../dao/repos.dao.js"
 import {findOverviewByUsername, createOverview, updateOverview} from "../dao/overview.dao.js"
 import {buildAnalysisSummary} from "./analysis.service.js";
 
+const githubHeaders = {
+    Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+    Accept: "application/vnd.github+json"
+};
+
 function anlyzePopularity(followerCount){
     if(followerCount <100){
         return "Very Low"
@@ -26,7 +31,11 @@ async function fetchLanguage(url){
         controller.abort();
     }, 5000);
     try{
-        const response = await fetch(url,{signal:controller.signal});
+        const response = await fetch(url,
+            {
+                headers:githubHeaders,
+                signal:controller.signal
+            });
         if(!response.ok){
             throw new Error("Cant get languages data from git hub");
         }
@@ -45,7 +54,12 @@ const controller = new AbortController();
         controller.abort();
     }, 5000);
     try{
-        const response = await fetch(url,{signal:controller.signal});
+        const response = await fetch(
+            url,
+            {
+                headers:githubHeaders,
+                signal:controller.signal
+            });
         if(!response.ok){
             throw new Error(response.statusText)
         }
@@ -64,7 +78,10 @@ async function fetchGitData(id){
         controller.abort();
     }, 5000);
     try{
-        const response = await fetch(`https://api.github.com/users/${id}`,{signal:controller.signal});
+        const response = await fetch(`https://api.github.com/users/${id}`,
+            {
+                headers:githubHeaders,
+                signal:controller.signal});
         if(!response.ok){
             throw new Error(response.statusText)
         }

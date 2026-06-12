@@ -19,11 +19,3 @@ build/
 .DS_Store
 Thumbs.db
 .vscode/
-.idea/
-tmp/
-temp/
-*.sql
-*.sqlite
-*.db
-*.tgz
-.cache/

@@ -123,4 +123,4 @@ function buildAnalysisSummary(overview, repos) {
     };
 }
 
-export {buildAnalysisSummary};
+export {findAccountAge, buildAnalysisSummary};

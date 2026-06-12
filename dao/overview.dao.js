@@ -8,6 +8,18 @@ async function findOverviewByUsername(username) {
     return rows[0];
 }
 
+async function findAllOverviews() {
+    const [rows] = await pool.execute(
+        `
+        SELECT *
+        FROM overview
+        ORDER BY id DESC
+        `
+    );
+
+    return rows;
+}
+
 async function createOverview(connection, data) {
     const [result] = await connection.execute(
         `
@@ -56,4 +68,4 @@ async function updateOverview(connection, id, data) {
         ]
     );
 }
-export {findOverviewByUsername, createOverview, updateOverview};
+export {findOverviewByUsername, findAllOverviews, createOverview, updateOverview};
